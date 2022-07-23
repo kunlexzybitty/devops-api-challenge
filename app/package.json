@@ -1,0 +1,27 @@
+{
+  "name": "devops-api-challenge",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "stop": "pm2 kill",
+    "start": "pm2 start index.js",
+    "dev": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kunlexzybitty/devops-api-challenge.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kunlexzybitty/devops-api-challenge/issues"
+  },
+  "homepage": "https://github.com/kunlexzybitty/devops-api-challenge#readme",
+  "dependencies": {
+    "express": "^4.18.1",
+    "jest": "^28.1.3",
+    "supertest": "^6.2.4"
+  }
+}
