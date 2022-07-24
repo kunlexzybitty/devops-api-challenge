@@ -10,8 +10,9 @@ app.use(express.urlencoded({ extended: true }));
 //Add routes to express app
 app.use('/', routes);
 
-app.listen(port, () => {
+let server = app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`)
 })
 
-module.exports = app;
+
+module.exports = server;

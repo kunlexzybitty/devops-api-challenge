@@ -1,6 +1,6 @@
 const supertest = require("supertest");
-const app = require("../index");
-const request =  supertest(app);
+const server = require("../index");
+const request =  supertest(server);
 
 
 test ("Fetch Todos", (done) => {
@@ -13,7 +13,8 @@ test ("Fetch Todos", (done) => {
         
         expect(res.body).toBeInstanceOf(Object);
         expect(res.body.length).toBe(5);
-
+        server.close();
         done();
     })
 })
+
