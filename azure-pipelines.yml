@@ -55,11 +55,20 @@ stages:
           secretType: 'dockerRegistry'
           secretName: '$(acrsecret)'
           dockerRegistryEndpoint: 'demoazureregistrytest'
-      - task: KubernetesManifest@0
+      # - task: KubernetesManifest@0
+      #   inputs:
+      #     action: 'deploy'
+      #     kubernetesServiceConnection: 'k8s-connection'
+      #     namespace: 'default'
+      #     manifests: |
+      #       $(Pipeline.Workspace)/manifest/deployment.yml
+      #       $(Pipeline.Workspace)/manifest/service.yml
+      - task: HelmDeploy@0
+        displayName: Helm install
         inputs:
           action: 'deploy'
           kubernetesServiceConnection: 'k8s-connection'
           namespace: 'default'
-          manifests: |
-            $(Pipeline.Workspace)/manifest/deployment.yml
-            $(Pipeline.Workspace)/manifest/service.yml
+          command: install
+          chartType: FilePath
+          chartPath: $(Pipeline.Workspace)/manifest
