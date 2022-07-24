@@ -9,6 +9,23 @@ variables:
   tag: '$(Build.BuildId)'
 
 stages:
+- stage: Test
+  displayName: Test Application
+  jobs:
+  - job: Test
+    displayName: Test
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '12.x'
+      displayName: 'Install Node.js'
+    - script: |
+        npm install
+        npm run build
+        npm run test
+      displayName: 'npm install, build, and test'  
 - stage: Build
   displayName: Build image
   jobs:
@@ -25,7 +42,6 @@ stages:
        Dockerfile: '$(Build.SourcesDirectory)/app/Dockerfile'
        tags: |
         $(tag)
-        latest
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: '$(Pipeline.Workspace)/s/k8s'
@@ -35,7 +51,7 @@ stages:
   displayName: Deploy to Dev
   dependsOn: Build
   variables:
-    acrsecret: k8sexampleacrauth
+    acrsecretname: k8sexampleacrauth
   jobs:
     - deployment: Deploy
       displayName: Deploy to AKS
@@ -56,17 +72,8 @@ stages:
                 action: 'createSecret'
                 namespace: 'default'
                 secretType: 'dockerRegistry'
-                secretName: '$(acrsecret)'
+                secretName: '$(acrsecretname)'
                 dockerRegistryEndpoint: 'demoazureregistrytest'
-            
-            # - task: KubernetesManifest@0
-            #   inputs:
-            #     action: 'deploy'
-            #     kubernetesServiceConnection: 'k8s-connection'
-            #     namespace: 'default'
-            #     manifests: |
-            #       $(Pipeline.Workspace)/manifest/deployment.yml
-            #       $(Pipeline.Workspace)/manifest/service.yml
             - task: HelmDeploy@0
               inputs:
                 namespace: 'default'
