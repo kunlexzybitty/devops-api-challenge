@@ -42,35 +42,34 @@ stages:
       environment: 'AKS_ENV.default'
       pool:
        vmImage: ubuntu-latest
-      steps:
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          buildType: 'current'
-          artifactName: 'manifest'
-          targetPath: '$(Pipeline.Workspace)/manifest'
-      - task: KubernetesManifest@0
-        inputs:
-          action: 'createSecret'
-          kubernetesServiceConnection: 'k8s-connection'
-          namespace: 'default'
-          secretType: 'dockerRegistry'
-          secretName: '$(acrsecret)'
-          dockerRegistryEndpoint: 'demoazureregistrytest'
-      # - task: KubernetesManifest@0
-      #   inputs:
-      #     action: 'deploy'
-      #     kubernetesServiceConnection: 'k8s-connection'
-      #     namespace: 'default'
-      #     manifests: |
-      #       $(Pipeline.Workspace)/manifest/deployment.yml
-      #       $(Pipeline.Workspace)/manifest/service.yml
-      - task: HelmDeploy@0
-        displayName: Helm install
-        inputs:
-          action: 'deploy'
-          kubernetesServiceConnection: 'k8s-connection'
-          namespace: 'default'
-          command: install
-          chartType: FilePath
-          chartPath: $(Pipeline.Workspace)/manifest
-        
+      strategy:
+       runOnce:
+         deploy:
+            steps:
+            - task: DownloadPipelineArtifact@2
+              inputs:
+                buildType: 'current'
+                artifactName: 'manifest'
+                targetPath: '$(Pipeline.Workspace)/manifest'
+            - task: KubernetesManifest@0
+              inputs:
+                action: 'createSecret'
+                namespace: 'default'
+                secretType: 'dockerRegistry'
+                secretName: '$(acrsecret)'
+                dockerRegistryEndpoint: 'demoazureregistrytest'
+            
+            # - task: KubernetesManifest@0
+            #   inputs:
+            #     action: 'deploy'
+            #     kubernetesServiceConnection: 'k8s-connection'
+            #     namespace: 'default'
+            #     manifests: |
+            #       $(Pipeline.Workspace)/manifest/deployment.yml
+            #       $(Pipeline.Workspace)/manifest/service.yml
+            - task: HelmDeploy@0
+              inputs:
+                namespace: 'default'
+                command: 'install'
+                chartType: 'FilePath'
+                chartPath: '$(Pipeline.Workspace)/manifest'
