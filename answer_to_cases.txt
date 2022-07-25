@@ -1,0 +1,27 @@
+1. Monitoring API uptime.
+   Choice of tool: Prometheus
+   Reason: This tool helps capture data points such as resource usage and uptime from the API service and a dashboard to generate reports.
+           A metrics exporter is installed as a package with the app which can be accessed via http and consumed by prometheus.  
+           Alerts can be setup to get notifications when issues arise.
+
+2,3,4. 
+ > Monitor critical service uptime.
+ > DB activity - Overload, performance etc
+ > Network Infrastructure.
+   Choice of tool: Datadog
+   Reason: It is an great tool for monitoring the performance of infrastructure and services such as databases. 
+           This would help quickly identify and respond to issues and incidents.
+
+5. Aggregating and streaming logs across multiple services
+   Choice of tool: ElasticSearch and LogStash
+   Reason: ElasticSearch search is a powerful tool used to collet and search tons of data. 
+           This is a good option to save logs overtime for future reference.
+           LogStash helps stream logs from various sources to ElasticSearch.
+   
+6. How do you upgrade multiple services in a microservice architecture, and make a case for this? 
+   i.e. updating multiple node versions, what would you consider?
+   
+   Answer: The best approach is blue/green deployment strategy. Two versions of each service, with one version actively taking traffic. 
+           The approach is to deploy the inactive color, then switch traffic to it. 
+           One advantage to this approach is easy rollback: simply by switching traffic back to the previous version. 
+           
